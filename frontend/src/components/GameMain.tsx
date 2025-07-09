@@ -80,7 +80,6 @@ const GameMain = ({
     const boostBonus = boostLevel === 1 ? 15 : boostLevel === 2 ? 25 : 0;
     const totalCoins = baseCoins + boostBonus;
 
-    // Add tap effect
     const newEffect = {
       id: Date.now() + Math.random(),
       x,
@@ -91,7 +90,6 @@ const GameMain = ({
     setTapEffects(prev => [...prev, newEffect]);
     onCoinTap();
 
-    // Remove tap effect after animation
     setTimeout(() => {
       setTapEffects(prev => prev.filter(effect => effect.id !== newEffect.id));
     }, 1000);
@@ -193,16 +191,14 @@ const GameMain = ({
         )}
       </div>
 
-      {/* Main Coin */}
-      <div className="relative mb-8">
+      {/* Bitta katta coin tugma */}
+      <div className="relative mb-8 flex items-center justify-center">
         <div 
-          className={`w-40 h-40 rounded-full bg-gradient-to-r from-neon-cyan to-neon-purple p-1 cursor-pointer select-none transition-all duration-700 ${
-            energy > 0 ? 'hover:scale-105' : 'opacity-50 cursor-not-allowed'
-          }`}
+          className={`w-260 h-260 rounded-full bg-gradient-to-r from-neon-cyan to-neon-purple p-2 cursor-pointer select-none ${energy > 0 ? '' : 'opacity-50 cursor-not-allowed'}`}
           onClick={handleTap}
         >
           <div className="w-full h-full rounded-full bg-dark-future flex items-center justify-center">
-            <Zap className="w-16 h-16 text-neon-cyan" />
+            <Zap className="w-80 h-80 text-neon-cyan" />
           </div>
         </div>
 
@@ -231,15 +227,15 @@ const GameMain = ({
             <Button
               onClick={onBoostUpgrade}
               disabled={!boostInfo.canUpgrade}
-              className={`w-20 h-20 rounded-full p-0 transition-all duration-700 ${
+              className={`w-10 h-10 rounded-full p-0 ${
                 boostInfo.canUpgrade 
                   ? 'bg-gradient-to-r from-orange-500 to-red-500 hover:scale-105' 
                   : 'opacity-50 cursor-not-allowed bg-gray-600'
               }`}
             >
               <div className="flex flex-col items-center">
-                <Rocket className="w-6 h-6 text-white" />
-                <span className="text-xs text-white">UP</span>
+                <Rocket className="w-3 h-3 text-white" />
+                <span className="text-[10px] text-white">UP</span>
               </div>
             </Button>
           ) : (
@@ -268,13 +264,13 @@ const GameMain = ({
         {/* Old Boost Button (keeping for +5 coins) */}
         <div className="relative">
           <div 
-            className={`w-20 h-20 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 p-1 cursor-pointer select-none transition-all duration-700 ${
+            className={`w-10 h-10 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 p-1 cursor-pointer select-none ${
               energy > 0 ? 'hover:scale-105' : 'opacity-50 cursor-not-allowed'
             }`}
             onClick={handleBoostTap}
           >
             <div className="w-full h-full rounded-full bg-dark-future flex items-center justify-center">
-              <Zap className="w-8 h-8 text-green-400" />
+              <Zap className="w-4 h-4 text-green-400" />
             </div>
           </div>
           <div className="text-center mt-2">
@@ -287,13 +283,13 @@ const GameMain = ({
           <Button
             onClick={onEnergyRecharge}
             disabled={!canUseEnergyRecharge}
-            className={`w-20 h-20 rounded-full p-0 transition-all duration-700 ${
+            className={`w-10 h-10 rounded-full p-0 ${
               canUseEnergyRecharge 
                 ? 'bg-gradient-to-r from-blue-500 to-cyan-500 hover:scale-105' 
                 : 'opacity-50 cursor-not-allowed bg-gray-600'
             }`}
           >
-            <RefreshCw className="w-8 h-8 text-white" />
+            <RefreshCw className="w-4 h-4 text-white" />
           </Button>
           <div className="text-center mt-2">
             <span className="text-xs text-gray-subtle">Energiya</span>
@@ -305,13 +301,13 @@ const GameMain = ({
           <Button
             onClick={onBoostEnergy}
             disabled={!canUseBoostEnergy}
-            className={`w-20 h-20 rounded-full p-0 transition-all duration-700 ${
+            className={`w-10 h-10 rounded-full p-0 ${
               canUseBoostEnergy 
                 ? 'bg-gradient-to-r from-pink-500 to-yellow-400 hover:scale-105' 
                 : 'opacity-50 cursor-not-allowed bg-gray-600'
             }`}
           >
-            <Battery className="w-8 h-8 text-yellow-300" />
+            <Battery className="w-4 h-4 text-yellow-300" />
           </Button>
           <div className="text-center mt-2">
             <span className="text-xs text-gray-subtle">Boost Energy</span>
@@ -348,3 +344,4 @@ const GameMain = ({
 };
 
 export default GameMain;
+
