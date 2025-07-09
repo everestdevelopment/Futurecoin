@@ -105,7 +105,7 @@ const Statistics = () => {
               className="relative group animate-slide-in-up"
               style={{animationDelay: `${index * 0.1}s`}}
             >
-              <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-8 border-2 border-transparent hover:border-neon-cyan/50 transition-all duration-500 group-hover:scale-105 relative overflow-hidden">
+              <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-8 border-2 border-transparent hover:border-neon-cyan/50 relative overflow-hidden">
                 {/* Background glow effect */}
                 <div className="absolute inset-0 bg-gradient-to-br from-neon-cyan/5 to-neon-purple/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 

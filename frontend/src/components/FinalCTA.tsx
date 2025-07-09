@@ -41,7 +41,7 @@ const FinalCTA = () => {
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-12">
               <Button 
                 size="lg" 
-                className="bg-gradient-to-r from-neon-cyan to-neon-purple hover:from-neon-purple hover:to-neon-cyan text-dark-future font-bold px-10 py-5 rounded-full transition-all duration-300 transform hover:scale-105 animate-glow-pulse text-lg"
+                className="bg-gradient-to-r from-neon-cyan to-neon-purple hover:from-neon-purple hover:to-neon-cyan text-dark-future font-bold px-10 py-5 rounded-full animate-glow-pulse text-lg"
               >
                 <Zap className="mr-3 h-6 w-6" />
                 Boshlash
@@ -51,7 +51,7 @@ const FinalCTA = () => {
               <Button
                 variant="outline"
                 size="lg"
-                className="border-2 border-neon-cyan text-neon-cyan hover:bg-neon-cyan hover:text-dark-future font-semibold px-10 py-5 rounded-full transition-all duration-300 transform hover:scale-105 text-lg"
+                className="border-2 border-neon-cyan text-neon-cyan hover:bg-neon-cyan hover:text-dark-future font-semibold px-10 py-5 rounded-full text-lg"
               >
                 <FileText className="mr-3 h-5 w-5" />
                 Whitepaper / Tokenomics

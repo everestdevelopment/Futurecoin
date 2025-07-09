@@ -51,7 +51,7 @@ const Benefits = () => {
               {benefits.map((benefit, index) => (
                 <div 
                   key={index}
-                  className="flex items-start space-x-4 p-4 rounded-xl bg-card/30 backdrop-blur-sm border border-neon-cyan/20 hover:border-neon-cyan/40 transition-all duration-300 group animate-slide-in-up"
+                  className="flex items-start space-x-4 p-4 rounded-xl bg-card/30 backdrop-blur-sm border border-neon-cyan/20 hover:border-neon-cyan/40 group animate-slide-in-up"
                   style={{animationDelay: `${index * 0.1}s`}}
                 >
                   <div className="flex-shrink-0">

@@ -85,11 +85,7 @@ const LeaderboardPanel = ({ userCoins, userLevel }: LeaderboardPanelProps) => {
           {fullLeaderboard.slice(0, 10).map((player) => (
             <div
               key={player.name}
-              className={`p-4 flex items-center justify-between transition-all duration-300 ${
-                player.name === 'Siz' 
-                  ? 'bg-gradient-to-r from-neon-cyan/10 to-neon-purple/10 border-l-4 border-neon-cyan' 
-                  : 'hover:bg-card/30'
-              }`}
+              className={`p-4 flex items-center justify-between ${player.name === 'Siz' ? 'bg-gradient-to-r from-neon-cyan/10 to-neon-purple/10 border-l-4 border-neon-cyan' : ''}`}
             >
               <div className="flex items-center space-x-3">
                 <div className="flex items-center justify-center w-8 h-8">

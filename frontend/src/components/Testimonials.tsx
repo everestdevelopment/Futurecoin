@@ -50,7 +50,7 @@ const Testimonials = () => {
           {testimonials.map((testimonial, index) => (
             <Card 
               key={index}
-              className="relative group cursor-pointer transition-all duration-500 hover:scale-105 bg-card/80 backdrop-blur-sm border-2 border-transparent hover:border-neon-cyan/50 animate-slide-in-up"
+              className="relative group cursor-pointer bg-card/80 backdrop-blur-sm border-2 border-transparent hover:border-neon-cyan/50 animate-slide-in-up"
               style={{animationDelay: `${index * 0.2}s`}}
             >
               <CardContent className="p-8 relative">

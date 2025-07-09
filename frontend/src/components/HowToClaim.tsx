@@ -89,7 +89,7 @@ const HowToClaim = () => {
                   {/* Details checklist */}
                   <div className="space-y-3">
                     {step.details.map((detail, detailIndex) => (
-                      <div key={detailIndex} className="flex items-center space-x-3 p-3 rounded-lg bg-card/30 backdrop-blur-sm border border-neon-cyan/20 hover:border-neon-cyan/40 transition-all duration-300">
+                      <div key={detailIndex} className="flex items-center space-x-3 p-3 rounded-lg bg-card/30 backdrop-blur-sm border border-neon-cyan/20 hover:border-neon-cyan/40">
                         <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />
                         <span className="text-white">{detail}</span>
                       </div>
@@ -99,7 +99,7 @@ const HowToClaim = () => {
 
                 {/* Visual side */}
                 <div className={`relative ${index % 2 === 1 ? 'lg:order-1' : ''}`}>
-                  <div className="relative bg-card/50 backdrop-blur-sm rounded-2xl p-8 border-2 border-transparent hover:border-neon-cyan/50 transition-all duration-500 group">
+                  <div className="relative bg-card/50 backdrop-blur-sm rounded-2xl p-8 border-2 border-transparent hover:border-neon-cyan/50">
                     {/* Icon */}
                     <div className={`w-24 h-24 rounded-2xl bg-gradient-to-r ${step.color} p-1 mx-auto mb-6 animate-glow-pulse group-hover:animate-circuit-float`}>
                       <div className="w-full h-full rounded-2xl bg-dark-future flex items-center justify-center">

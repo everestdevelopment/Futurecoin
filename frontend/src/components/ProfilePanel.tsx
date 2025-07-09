@@ -77,7 +77,7 @@ const ProfilePanel = ({ coins, level, xp }: ProfilePanelProps) => {
           {achievements.map((achievement) => (
             <div
               key={achievement.id}
-              className={`flex items-center space-x-3 p-3 rounded-lg transition-all duration-300 ${
+              className={`flex items-center space-x-3 p-3 rounded-lg transition-all duration-700 ${
                 achievement.completed 
                   ? 'bg-gradient-to-r from-green-400/10 to-neon-cyan/10 border border-green-400/20' 
                   : 'bg-card/30 border border-gray-600/20'
@@ -127,7 +127,7 @@ const ProfilePanel = ({ coins, level, xp }: ProfilePanelProps) => {
       {/* Actions */}
       <div className="space-y-3">
         <Button
-          className="w-full bg-gradient-to-r from-neon-cyan to-neon-purple hover:from-neon-purple hover:to-neon-cyan text-dark-future font-semibold py-3 rounded-full transition-all duration-300"
+          className="w-full bg-gradient-to-r from-neon-cyan to-neon-purple hover:from-neon-purple hover:to-neon-cyan text-dark-future font-semibold py-3 rounded-full"
         >
           <Share2 className="w-4 h-4 mr-2" />
           Do'stlarni taklif qilish
@@ -135,7 +135,7 @@ const ProfilePanel = ({ coins, level, xp }: ProfilePanelProps) => {
         
         <Button
           variant="outline"
-          className="w-full border-neon-cyan text-neon-cyan hover:bg-neon-cyan hover:text-dark-future py-3 rounded-full transition-all duration-300"
+          className="w-full border-neon-cyan text-neon-cyan hover:bg-neon-cyan hover:text-dark-future py-3 rounded-full"
         >
           <Settings className="w-4 h-4 mr-2" />
           Sozlamalar

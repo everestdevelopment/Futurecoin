@@ -62,7 +62,7 @@ const HeroSection = ({ onStartGame }: HeroSectionProps) => {
             <Button 
               size="lg" 
               onClick={onStartGame}
-              className="bg-gradient-to-r from-neon-cyan to-neon-purple hover:from-neon-purple hover:to-neon-cyan text-dark-future font-semibold px-8 py-4 rounded-full transition-all duration-500 transform hover:scale-105 animate-glow-pulse"
+              className="bg-gradient-to-r from-neon-cyan to-neon-purple hover:from-neon-purple hover:to-neon-cyan text-dark-future font-semibold px-8 py-4 rounded-full animate-glow-pulse"
             >
               <Zap className="mr-2 h-5 w-5" />
               Boshlash (Telegram orqali)
@@ -72,7 +72,7 @@ const HeroSection = ({ onStartGame }: HeroSectionProps) => {
             <Button
               variant="outline"
               size="lg"
-              className="border-2 border-neon-cyan text-neon-cyan hover:bg-neon-cyan hover:text-dark-future font-semibold px-8 py-4 rounded-full transition-all duration-500 transform hover:scale-105"
+              className="border-2 border-neon-cyan text-neon-cyan hover:bg-neon-cyan hover:text-dark-future font-semibold px-8 py-4 rounded-full transition-all duration-700 transform hover:scale-105"
             >
               <Wallet className="mr-2 h-5 w-5" />
               TON wallet ulash
@@ -86,7 +86,7 @@ const HeroSection = ({ onStartGame }: HeroSectionProps) => {
               { number: '32M+', label: 'Topilgan tangalar' },
               { number: '85K+', label: 'Referral orqali' }
             ].map((stat, index) => (
-              <div key={index} className="text-center p-6 rounded-2xl bg-card/50 backdrop-blur-sm border border-neon-cyan/20 hover:border-neon-cyan/40 transition-all duration-500 animate-circuit-float" style={{animationDelay: `${index * 0.8}s`, animationDuration: '4s'}}>
+              <div key={index} className="text-center p-6 rounded-2xl bg-card/50 backdrop-blur-sm border border-neon-cyan/20 hover:border-neon-cyan/40 transition-all duration-700 animate-circuit-float" style={{animationDelay: `${index * 0.8}s`, animationDuration: '4s'}}>
                 <div className="text-3xl font-bold gradient-text">{stat.number}</div>
                 <div className="text-gray-subtle mt-2">{stat.label}</div>
               </div>

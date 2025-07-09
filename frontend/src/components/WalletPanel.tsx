@@ -56,7 +56,7 @@ const WalletPanel = ({ coins }: WalletPanelProps) => {
             </p>
             <Button
               onClick={handleConnect}
-              className="bg-gradient-to-r from-neon-cyan to-neon-purple hover:from-neon-purple hover:to-neon-cyan text-dark-future font-semibold px-6 py-3 rounded-full transition-all duration-300"
+              className="bg-gradient-to-r from-neon-cyan to-neon-purple hover:from-neon-purple hover:to-neon-cyan text-dark-future font-semibold px-6 py-3 rounded-full"
             >
               TON Wallet ulash
             </Button>
@@ -125,7 +125,7 @@ const WalletPanel = ({ coins }: WalletPanelProps) => {
           <div className="text-center">
             {canClaim ? (
               <Button
-                className="bg-gradient-to-r from-green-400 to-neon-cyan hover:from-neon-cyan hover:to-green-400 text-dark-future font-bold px-8 py-3 rounded-full transition-all duration-300 transform hover:scale-105"
+                className="bg-gradient-to-r from-green-400 to-neon-cyan hover:from-neon-cyan hover:to-green-400 text-dark-future font-bold px-8 py-3 rounded-full"
                 disabled={!isConnected}
               >
                 {claimAmount} FUT Claim qilish
