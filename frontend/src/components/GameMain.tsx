@@ -157,7 +157,7 @@ const GameMain = ({
           </div>
           <div className="w-full bg-dark-future rounded-full h-2">
             <div 
-              className="bg-gradient-to-r from-neon-cyan to-blue-400 h-2 rounded-full transition-all duration-500"
+              className="bg-gradient-to-r from-neon-cyan to-blue-400 h-2 rounded-full transition-all duration-700"
               style={{ width: `${(energy / maxEnergy) * 100}%` }}
             />
           </div>
@@ -174,7 +174,7 @@ const GameMain = ({
           </div>
           <div className="w-full bg-dark-future rounded-full h-2">
             <div 
-              className="bg-gradient-to-r from-neon-purple to-pink-400 h-2 rounded-full transition-all duration-500"
+              className="bg-gradient-to-r from-neon-purple to-pink-400 h-2 rounded-full transition-all duration-700"
               style={{ width: `${xpProgress}%` }}
             />
           </div>
@@ -196,7 +196,7 @@ const GameMain = ({
       {/* Main Coin */}
       <div className="relative mb-8">
         <div 
-          className={`w-40 h-40 rounded-full bg-gradient-to-r from-neon-cyan to-neon-purple p-1 cursor-pointer select-none transition-all duration-150 ${
+          className={`w-40 h-40 rounded-full bg-gradient-to-r from-neon-cyan to-neon-purple p-1 cursor-pointer select-none transition-all duration-700 ${
             energy > 0 ? 'hover:scale-105' : 'opacity-50 cursor-not-allowed'
           }`}
           onClick={handleTap}
@@ -231,7 +231,7 @@ const GameMain = ({
             <Button
               onClick={onBoostUpgrade}
               disabled={!boostInfo.canUpgrade}
-              className={`w-20 h-20 rounded-full p-0 transition-all duration-150 ${
+              className={`w-20 h-20 rounded-full p-0 transition-all duration-700 ${
                 boostInfo.canUpgrade 
                   ? 'bg-gradient-to-r from-orange-500 to-red-500 hover:scale-105' 
                   : 'opacity-50 cursor-not-allowed bg-gray-600'
@@ -268,7 +268,7 @@ const GameMain = ({
         {/* Old Boost Button (keeping for +5 coins) */}
         <div className="relative">
           <div 
-            className={`w-20 h-20 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 p-1 cursor-pointer select-none transition-all duration-150 ${
+            className={`w-20 h-20 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 p-1 cursor-pointer select-none transition-all duration-700 ${
               energy > 0 ? 'hover:scale-105' : 'opacity-50 cursor-not-allowed'
             }`}
             onClick={handleBoostTap}
@@ -287,7 +287,7 @@ const GameMain = ({
           <Button
             onClick={onEnergyRecharge}
             disabled={!canUseEnergyRecharge}
-            className={`w-20 h-20 rounded-full p-0 transition-all duration-150 ${
+            className={`w-20 h-20 rounded-full p-0 transition-all duration-700 ${
               canUseEnergyRecharge 
                 ? 'bg-gradient-to-r from-blue-500 to-cyan-500 hover:scale-105' 
                 : 'opacity-50 cursor-not-allowed bg-gray-600'
@@ -305,7 +305,7 @@ const GameMain = ({
           <Button
             onClick={onBoostEnergy}
             disabled={!canUseBoostEnergy}
-            className={`w-20 h-20 rounded-full p-0 transition-all duration-150 ${
+            className={`w-20 h-20 rounded-full p-0 transition-all duration-700 ${
               canUseBoostEnergy 
                 ? 'bg-gradient-to-r from-pink-500 to-yellow-400 hover:scale-105' 
                 : 'opacity-50 cursor-not-allowed bg-gray-600'
