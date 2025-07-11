@@ -30,6 +30,10 @@ router.post('/claim', auth, async (req, res) => {
     if (!user) return res.status(404).json({ error: 'User not found' });
     if (!user.wallet) return res.status(400).json({ error: 'Wallet not connected' });
     if (user.coins < 1000) return res.status(400).json({ error: 'Kamida 1000 coin kerak' });
+    // Admin foydalanuvchi claim qilolmaydi
+    if (user.username && process.env.TELEGRAM_ADMIN_USERNAME && user.username === process.env.TELEGRAM_ADMIN_USERNAME) {
+      return res.status(403).json({ error: 'Admin uchun claim qilish mumkin emas' });
+    }
     // Claim qilish logikasi (tokenlarni yuborish, admin tekshiruvi va h.k.)
     // Hozircha faqat coinlarni 0 ga tushiramiz
     const claimed = user.coins;

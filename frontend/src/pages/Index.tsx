@@ -11,6 +11,8 @@ import HowToClaim from '@/components/HowToClaim';
 import FinalCTA from '@/components/FinalCTA';
 import { useAuth } from '@/hooks/useAuth';
 import { getProfile } from '@/lib/api';
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/material.css';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
@@ -31,7 +33,7 @@ const Index = () => {
       const res = await fetch(`${API_URL}/auth/send-code`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone })
+        body: JSON.stringify({ phone: '+' + phone })
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Kod yuborilmadi');
@@ -50,7 +52,7 @@ const Index = () => {
       const res = await fetch(`${API_URL}/auth/verify-code`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone, code })
+        body: JSON.stringify({ phone: '+' + phone, code })
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Kod noto‘g‘ri');
@@ -72,15 +74,27 @@ const Index = () => {
           <h2 className="text-2xl font-bold mb-4">Telefon raqam orqali kirish</h2>
           {step === 'phone' && (
             <>
-              <input
-                className="w-full p-2 rounded bg-dark-future border border-neon-cyan mb-2"
-                placeholder="Telefon raqam (998901234567)"
+              <PhoneInput
+                country={'auto'}
                 value={phone}
-                onChange={e => setPhone(e.target.value)}
-                disabled={sending}
+                onChange={setPhone}
+                inputStyle={{ width: '100%' }}
+                disableDropdown={true}
+                placeholder="Telefon raqam"
+                specialLabel=""
+                inputClass="!bg-dark-future !text-white !border-neon-cyan !py-3 !pl-14 !rounded-xl !text-lg !font-semibold"
+                buttonClass="!bg-dark-future !border-none !shadow-none !rounded-xl !w-12 !h-12 !flex !items-center !justify-center"
+                containerClass="!mb-2"
+                // GeoIP uchun mamlakat kodi aniqlash
+                geoIpLookup={function(callback) {
+                  fetch('https://ipapi.co/json')
+                    .then(res => res.json())
+                    .then(data => callback(data.country_code ? data.country_code.toLowerCase() : ''))
+                }}
               />
               <button
-                className="w-full bg-neon-cyan text-dark-future font-bold py-2 rounded hover:bg-neon-purple transition"
+                className="w-full bg-neon-cyan text-dark-future font-bold py-2 rounded transition-colors duration-500 mt-2"
+                style={{ transitionProperty: 'background-color', transitionDuration: '500ms' }}
                 onClick={sendCode}
                 disabled={!phone || sending}
               >
@@ -98,7 +112,8 @@ const Index = () => {
                 disabled={verifying}
               />
               <button
-                className="w-full bg-neon-cyan text-dark-future font-bold py-2 rounded hover:bg-neon-purple transition"
+                className="w-full bg-neon-cyan text-dark-future font-bold py-2 rounded transition-colors duration-500"
+                style={{ transitionProperty: 'background-color', transitionDuration: '500ms' }}
                 onClick={verifyCode}
                 disabled={!code || verifying}
               >

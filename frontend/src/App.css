@@ -40,3 +40,55 @@
 .read-the-docs {
   color: #888;
 }
+
+/* --- Custom styles for react-phone-input-2 country dropdown --- */
+.react-phone-input-2 .country-list {
+  background: #181c23 !important; /* Site dark card color */
+  color: #fff !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 24px 0 #0008 !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+.react-phone-input-2 .country-list .country {
+  border-bottom: 1px solid #fff !important; /* White separator */
+  padding: 10px 16px !important;
+  background: transparent !important;
+  color: #fff !important;
+  font-size: 16px !important;
+  transition: background 0.2s;
+}
+
+.react-phone-input-2 .country-list .country:last-child {
+  border-bottom: none !important;
+}
+
+.react-phone-input-2 .country-list .country:hover,
+.react-phone-input-2 .country-list .country.active {
+  background: #23272f !important;
+  color: #00f0ff !important;
+}
+
+.react-phone-input-2 .country-list .search {
+  background: #23272f !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 8px !important;
+  margin: 8px 8px 12px 8px !important;
+  padding: 8px 12px !important;
+}
+
+/* Hide default label or unwanted text in input (if any) */
+.react-phone-input-2 input[placeholder='Phone'],
+.react-phone-input-2 input[placeholder='Enter phone number'] {
+  display: none !important;
+}
+
+/* Hide react-phone-input-2 default label or 'Phone' text */
+.react-phone-input-2 .special-label {
+  background: #181c23 !important; /* Site dark background */
+  color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
