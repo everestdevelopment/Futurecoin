@@ -1,34 +1,75 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Wallet, ExternalLink, Copy, CheckCircle, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { connectWallet, claim, getProfile, getClaimDate } from '@/lib/api';
 
 interface WalletPanelProps {
   coins: number;
 }
 
 const WalletPanel = ({ coins }: WalletPanelProps) => {
+  const [wallet, setWallet] = useState('');
   const [isConnected, setIsConnected] = useState(false);
-  const [walletAddress] = useState('UQBvW8Z5huBkMJYdnfAEM5JqTNkuWX3diqYENkWsIL0XggGG');
   const [copied, setCopied] = useState(false);
+  const [claiming, setClaiming] = useState(false);
+  const [claimError, setClaimError] = useState<string | null>(null);
+  const [claimSuccess, setClaimSuccess] = useState<string | null>(null);
+  const [claimOpenDate, setClaimOpenDate] = useState('');
+  const [canClaim, setCanClaim] = useState(false);
+  const [claimAmount, setClaimAmount] = useState(0);
+  const [walletInput, setWalletInput] = useState('');
 
-  const handleConnect = () => {
-    // Simulate wallet connection
-    setIsConnected(true);
+  useEffect(() => {
+    getProfile().then(res => {
+      setWallet(res.user.wallet || '');
+      setIsConnected(!!res.user.wallet);
+    });
+    getClaimDate().then(res => setClaimOpenDate(res.claimOpenDate));
+    setCanClaim(coins >= 10000);
+    setClaimAmount(Math.floor(coins / 1000));
+  }, [coins]);
+
+  const handleConnect = async () => {
+    if (!walletInput) return;
+    try {
+      await connectWallet(walletInput);
+      setWallet(walletInput);
+      setIsConnected(true);
+    } catch {
+      setClaimError('Wallet ulashda xatolik');
+    }
   };
 
   const handleDisconnect = () => {
+    setWallet('');
     setIsConnected(false);
   };
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(walletAddress);
+    if (!wallet) return;
+    navigator.clipboard.writeText(wallet);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const canClaim = coins >= 10000;
-  const claimAmount = Math.floor(coins / 1000);
+  const handleClaim = async () => {
+    setClaiming(true);
+    setClaimError(null);
+    setClaimSuccess(null);
+    try {
+      const res = await claim();
+      setClaimSuccess(`${res.claimed} coin muvaffaqiyatli claim qilindi!`);
+    } catch (err: any) {
+      if (err.status === 403) {
+        setClaimError(`Claim ochiladi: ${claimOpenDate}`);
+      } else {
+        setClaimError('Claim qilishda xatolik yoki minimum coin yetarli emas');
+      }
+    } finally {
+      setClaiming(false);
+    }
+  };
 
   return (
     <div className="flex-1 p-4 space-y-6">
@@ -54,9 +95,16 @@ const WalletPanel = ({ coins }: WalletPanelProps) => {
             <p className="text-gray-subtle text-sm">
               TON wallet ulang va tokenlaringizni claim qiling
             </p>
+            <input
+              className="w-full p-2 rounded bg-dark-future border border-neon-cyan mb-2"
+              placeholder="TON wallet manzili"
+              value={walletInput}
+              onChange={e => setWalletInput(e.target.value)}
+            />
             <Button
               onClick={handleConnect}
               className="bg-gradient-to-r from-neon-cyan to-neon-purple hover:from-neon-purple hover:to-neon-cyan text-dark-future font-semibold px-6 py-3 rounded-full"
+              disabled={!walletInput}
             >
               TON Wallet ulash
             </Button>
@@ -77,11 +125,10 @@ const WalletPanel = ({ coins }: WalletPanelProps) => {
                 Uzish
               </Button>
             </div>
-            
             <div className="bg-dark-future/50 rounded-lg p-3">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-subtle font-mono">
-                  {walletAddress.slice(0, 8)}...{walletAddress.slice(-8)}
+                  {wallet.slice(0, 8)}...{wallet.slice(-8)}
                 </span>
                 <div className="flex space-x-2">
                   <Button
@@ -109,7 +156,6 @@ const WalletPanel = ({ coins }: WalletPanelProps) => {
       {/* Balance & Claim */}
       <div className="bg-card/50 backdrop-blur-sm rounded-xl p-6 border border-neon-purple/20">
         <h3 className="text-lg font-bold text-white mb-4">Token Balance</h3>
-        
         <div className="space-y-4">
           <div className="flex items-center justify-between p-4 bg-gradient-to-r from-neon-cyan/10 to-neon-purple/10 rounded-lg">
             <div>
@@ -121,14 +167,14 @@ const WalletPanel = ({ coins }: WalletPanelProps) => {
               <div className="text-xl font-bold text-neon-cyan">{claimAmount} FUT</div>
             </div>
           </div>
-
           <div className="text-center">
             {canClaim ? (
               <Button
                 className="bg-gradient-to-r from-green-400 to-neon-cyan hover:from-neon-cyan hover:to-green-400 text-dark-future font-bold px-8 py-3 rounded-full"
-                disabled={!isConnected}
+                disabled={!isConnected || claiming}
+                onClick={handleClaim}
               >
-                {claimAmount} FUT Claim qilish
+                {claiming ? 'Claim qilinmoqda...' : `${claimAmount} FUT Claim qilish`}
               </Button>
             ) : (
               <div className="text-center">
@@ -140,6 +186,8 @@ const WalletPanel = ({ coins }: WalletPanelProps) => {
                 </div>
               </div>
             )}
+            {claimError && <div className="text-red-400 mt-2">{claimError}</div>}
+            {claimSuccess && <div className="text-green-400 mt-2">{claimSuccess}</div>}
           </div>
         </div>
       </div>
@@ -152,6 +200,7 @@ const WalletPanel = ({ coins }: WalletPanelProps) => {
           <li>• Minimum claim: 10,000 coin</li>
           <li>• TON network commission: ~0.05 TON</li>
           <li>• Tokenlar 24 soat ichida yetkaziladi</li>
+          <li>• Claim ochiladi: <span className="text-neon-cyan font-bold">{claimOpenDate}</span></li>
         </ul>
       </div>
     </div>

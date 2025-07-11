@@ -1,10 +1,24 @@
 
 import { ArrowRight, Zap, FileText, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useEffect, useState } from 'react';
+import { getClaimDate } from '@/lib/api';
 
 const FinalCTA = () => {
+  const [claimDate, setClaimDate] = useState('');
+  useEffect(() => {
+    getClaimDate().then(res => setClaimDate(res.claimOpenDate));
+  }, []);
   return (
-    <section className="py-20 bg-gradient-to-b from-dark-future to-dark-future/80 relative overflow-hidden">
+    <section className="py-20 bg-gradient-to-b from-dark-future/90 to-dark-future relative overflow-hidden">
+      {/* Claim ochilish sanasi banneri */}
+      {claimDate && (
+        <div className="mb-8 text-center">
+          <div className="inline-block bg-gradient-to-r from-neon-cyan to-neon-purple text-dark-future font-bold px-6 py-2 rounded-full animate-glow-pulse">
+            Claim ochiladi: <span className="text-white">{claimDate}</span>
+          </div>
+        </div>
+      )}
       {/* Background effects */}
       <div className="absolute inset-0">
         <div className="absolute top-0 left-0 w-full h-full bg-circuit-pattern opacity-10"></div>

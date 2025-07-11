@@ -1,6 +1,7 @@
 
 import { useEffect, useState } from 'react';
 import { Users, Coins, UserPlus, Zap } from 'lucide-react';
+import { getStats } from '@/lib/api';
 
 const Statistics = () => {
   const [counts, setCounts] = useState({
@@ -9,38 +10,19 @@ const Statistics = () => {
     referrals: 0,
     tokens: 0
   });
-
-  const targetCounts = {
-    users: 125000,
-    coins: 32000000,
-    referrals: 85000,
-    tokens: 1000000
-  };
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const duration = 2000; // 2 seconds
-    const steps = 60;
-    const stepDuration = duration / steps;
-
-    let currentStep = 0;
-    const timer = setInterval(() => {
-      currentStep++;
-      const progress = currentStep / steps;
-      
-      setCounts({
-        users: Math.floor(targetCounts.users * progress),
-        coins: Math.floor(targetCounts.coins * progress),
-        referrals: Math.floor(targetCounts.referrals * progress),
-        tokens: Math.floor(targetCounts.tokens * progress)
-      });
-
-      if (currentStep >= steps) {
-        clearInterval(timer);
-        setCounts(targetCounts);
-      }
-    }, stepDuration);
-
-    return () => clearInterval(timer);
+    getStats()
+      .then(res => {
+        setCounts({
+          users: res.users,
+          coins: res.coins,
+          referrals: res.referrals,
+          tokens: Math.floor(res.coins / 1000)
+        });
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   const formatNumber = (num: number) => {
@@ -55,29 +37,29 @@ const Statistics = () => {
   const stats = [
     {
       icon: Users,
-      number: formatNumber(counts.users) + '+',
+      number: loading ? '...' : formatNumber(counts.users) + '+',
       label: 'Foydalanuvchilar',
       emoji: '🌍',
       color: 'from-neon-cyan to-blue-400'
     },
     {
       icon: Coins,
-      number: formatNumber(counts.coins) + '+',
+      number: loading ? '...' : formatNumber(counts.coins) + '+',
       label: 'Tanga topilgan',
       emoji: '⛏',
       color: 'from-yellow-400 to-orange-400'
     },
     {
       icon: UserPlus,
-      number: formatNumber(counts.referrals) + '+',
+      number: loading ? '...' : formatNumber(counts.referrals) + '+',
       label: 'Referral orqali',
       emoji: '👥',
       color: 'from-neon-purple to-pink-400'
     },
     {
       icon: Zap,
-      number: '$FUT',
-      label: "TON'da tez orada!",
+      number: loading ? '...' : formatNumber(counts.tokens) + '+',
+      label: "FUT tokenlar", // TON'da tez orada!
       emoji: '🪙',
       color: 'from-green-400 to-neon-cyan'
     }
@@ -87,7 +69,6 @@ const Statistics = () => {
     <section className="py-20 bg-gradient-to-b from-dark-future to-dark-future/90 relative">
       {/* Background effects */}
       <div className="absolute inset-0 bg-circuit-pattern opacity-5"></div>
-      
       <div className="container mx-auto px-4 relative z-10">
         <div className="text-center mb-16 animate-slide-in-up">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
@@ -97,7 +78,6 @@ const Statistics = () => {
             Futurecoin jamoasining o'sishi va muvaffaqiyatlari
           </p>
         </div>
-
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
           {stats.map((stat, index) => (
             <div 
@@ -108,7 +88,6 @@ const Statistics = () => {
               <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-8 border-2 border-transparent hover:border-neon-cyan/50 relative overflow-hidden">
                 {/* Background glow effect */}
                 <div className="absolute inset-0 bg-gradient-to-br from-neon-cyan/5 to-neon-purple/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                
                 {/* Icon and emoji */}
                 <div className="flex items-center justify-between mb-6">
                   <div className={`p-3 rounded-xl bg-gradient-to-r ${stat.color} animate-glow-pulse`}>
@@ -118,7 +97,6 @@ const Statistics = () => {
                     {stat.emoji}
                   </span>
                 </div>
-
                 {/* Numbers */}
                 <div className="text-center">
                   <div className="text-4xl md:text-5xl font-bold gradient-text mb-2 animate-counter-up">
@@ -128,14 +106,12 @@ const Statistics = () => {
                     {stat.label}
                   </div>
                 </div>
-
                 {/* Animated border */}
                 <div className="absolute inset-0 rounded-2xl border-2 border-gradient-to-r from-neon-cyan to-neon-purple opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
               </div>
             </div>
           ))}
         </div>
-
         {/* Bottom CTA */}
         <div className="text-center mt-16 animate-slide-in-up" style={{animationDelay: '0.5s'}}>
           <p className="text-lg text-gray-subtle mb-6">

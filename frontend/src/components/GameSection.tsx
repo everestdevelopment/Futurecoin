@@ -6,6 +6,7 @@ import GameMain from '@/components/GameMain';
 import WalletPanel from '@/components/WalletPanel';
 import LeaderboardPanel from '@/components/LeaderboardPanel';
 import ProfilePanel from '@/components/ProfilePanel';
+import { getProfile, tap, rechargeEnergy, upgradeBoost } from '@/lib/api';
 
 interface GameSectionProps {
   onBack: () => void;
@@ -15,92 +16,60 @@ type ActivePanel = 'game' | 'wallet' | 'leaderboard' | 'profile';
 
 const GameSection = ({ onBack }: GameSectionProps) => {
   const [activePanel, setActivePanel] = useState<ActivePanel>('game');
-  const [coins, setCoins] = useState(1000);
+  const [coins, setCoins] = useState(0);
   const [level, setLevel] = useState(1);
   const [xp, setXp] = useState(0);
-  const [energy, setEnergy] = useState(500); // 100 -> 500
-  const [maxEnergy] = useState(500); // 100 -> 500
-  const [boostLevel, setBoostLevel] = useState(0); // 0: normal, 1: +15, 2: +25
-  
-  // Energy recharge system
+  const [energy, setEnergy] = useState(100);
+  const [maxEnergy] = useState(100);
+  const [boostLevel, setBoostLevel] = useState(0);
   const [energyRechargeCount, setEnergyRechargeCount] = useState(0);
-  const [lastRechargeReset, setLastRechargeReset] = useState(Date.now());
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Energy regeneration
   useEffect(() => {
-    const interval = setInterval(() => {
-      setEnergy(prev => Math.min(prev + 1, maxEnergy));
-    }, 3000); // Regenerate 1 energy every 3 seconds
+    setLoading(true);
+    getProfile()
+      .then(res => {
+        setCoins(res.user.coins);
+        setLevel(res.user.level);
+        setXp(res.user.xp);
+        setEnergy(res.user.energy);
+        setBoostLevel(res.user.boostLevel);
+        setEnergyRechargeCount(res.user.energyRechargeCount || 0);
+      })
+      .catch(() => setError('Ma’lumotlarni olishda xatolik'))
+      .finally(() => setLoading(false));
+  }, []);
 
-    return () => clearInterval(interval);
-  }, [maxEnergy]);
-
-  // Reset energy recharge count every 5 hours
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const now = Date.now();
-      const fiveHours = 5 * 60 * 60 * 1000; // 5 hours in milliseconds
-      
-      if (now - lastRechargeReset >= fiveHours) {
-        setEnergyRechargeCount(0);
-        setLastRechargeReset(now);
-      }
-    }, 60000); // Check every minute
-
-    return () => clearInterval(interval);
-  }, [lastRechargeReset]);
-
-  // Level up logic
-  useEffect(() => {
-    const xpNeeded = level * 100;
-    if (xp >= xpNeeded) {
-      setLevel(prev => prev + 1);
-      setXp(prev => prev - xpNeeded);
-      // Mukofot berish
-      const nextLevel = level + 1;
-      if (nextLevel <= 20) {
-        setCoins(prev => prev + levelRewards[nextLevel]);
-      }
-    }
-  }, [xp, level]);
-
-  const handleCoinTap = () => {
-    if (energy > 0) {
-      const baseCoins = level * 10;
-      const boostBonus = boostLevel === 1 ? 15 : boostLevel === 2 ? 25 : 0;
-      const totalCoins = baseCoins + boostBonus;
-      const xpEarned = 5;
-      
-      setCoins(prev => prev + totalCoins);
-      setXp(prev => prev + xpEarned);
-      setEnergy(prev => Math.max(prev - 1, 0));
+  const handleCoinTap = async () => {
+    try {
+      const res = await tap();
+      setCoins(res.coins);
+      setXp(res.xp);
+      setLevel(res.level);
+      setEnergy(res.energy);
+    } catch (err) {
+      setError('Energiya yetarli emas yoki server xatosi');
     }
   };
 
-  const handleBoostTap = () => {
-    if (energy > 0) {
-      const coinsEarned = 5;
-      const xpEarned = 2;
-      
-      setCoins(prev => prev + coinsEarned);
-      setXp(prev => prev + xpEarned);
-      setEnergy(prev => Math.max(prev - 1, 0));
+  const handleBoostUpgrade = async () => {
+    try {
+      const res = await upgradeBoost();
+      setBoostLevel(res.boostLevel);
+      setCoins(res.coins);
+    } catch (err) {
+      setError('Boost oshirishda xatolik');
     }
   };
 
-  const handleBoostUpgrade = () => {
-    const upgradeCost = boostLevel === 0 ? 1000 : 2000;
-    
-    if (coins >= upgradeCost && boostLevel < 2) {
-      setCoins(prev => prev - upgradeCost);
-      setBoostLevel(prev => prev + 1);
-    }
-  };
-
-  const handleEnergyRecharge = () => {
-    if (energyRechargeCount < 3) {
-      setEnergy(maxEnergy);
-      setEnergyRechargeCount(prev => prev + 1);
+  const handleEnergyRecharge = async () => {
+    try {
+      const res = await rechargeEnergy();
+      setEnergy(res.energy);
+      setEnergyRechargeCount(res.energyRechargeCount);
+    } catch (err) {
+      setError('Energiya to‘ldirishda xatolik yoki limit tugagan');
     }
   };
 
@@ -134,7 +103,7 @@ const GameSection = ({ onBack }: GameSectionProps) => {
             energy={energy}
             maxEnergy={maxEnergy}
             onCoinTap={handleCoinTap}
-            onBoostTap={handleBoostTap}
+            onBoostTap={() => {}} // No direct boost tap in this component, handled by API
             onBoostUpgrade={handleBoostUpgrade}
             onEnergyRecharge={handleEnergyRecharge}
             canUseEnergyRecharge={canUseEnergyRecharge}
@@ -164,7 +133,7 @@ const GameSection = ({ onBack }: GameSectionProps) => {
           variant="ghost"
           size="sm"
           onClick={onBack}
-          className="text-neon-cyan hover:text-white hover:bg-neon-cyan/20"
+          className="text-neon-cyan"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Orqaga
@@ -185,66 +154,65 @@ const GameSection = ({ onBack }: GameSectionProps) => {
 
       {/* Main Content */}
       <div className="flex-1 overflow-hidden">
-        {renderActivePanel()}
+        {loading ? (
+          <div className="flex items-center justify-center h-full">
+            <p className="text-neon-cyan">Yuklanmoqda...</p>
+          </div>
+        ) : error ? (
+          <div className="flex items-center justify-center h-full text-red-500">
+            <p>{error}</p>
+          </div>
+        ) : (
+          renderActivePanel()
+        )}
       </div>
 
       {/* Bottom Navigation */}
       <div className="bg-card/80 backdrop-blur-sm border-t border-neon-cyan/20 p-4">
         <div className="grid grid-cols-4 gap-2 max-w-md mx-auto">
           <Button
-            variant={activePanel === 'game' ? 'default' : 'ghost'}
-            size="sm"
+            variant="ghost"
+            size="icon"
             onClick={() => setActivePanel('game')}
-            className={`flex flex-col items-center space-y-1 py-3 ${
-              activePanel === 'game' 
-                ? 'bg-gradient-to-r from-neon-cyan to-neon-purple text-dark-future' 
-                : 'text-gray-subtle hover:text-neon-cyan'
-            }`}
+            className={`${activePanel === 'game' ? 'text-neon-cyan' : 'text-gray-subtle'} w-14 h-14 flex items-center justify-center group`}
+            tabIndex={0}
           >
-            <Zap className="w-5 h-5" />
-            <span className="text-xs">O'yin</span>
+            <span className="w-12 h-12 flex items-center justify-center rounded-full transition-all duration-200">
+              <Zap className={`w-6 h-6 ${activePanel === 'game' ? 'text-neon-cyan' : 'text-gray-subtle'}`} />
+            </span>
           </Button>
-          
           <Button
-            variant={activePanel === 'wallet' ? 'default' : 'ghost'}
-            size="sm"
+            variant="ghost"
+            size="icon"
             onClick={() => setActivePanel('wallet')}
-            className={`flex flex-col items-center space-y-1 py-3 ${
-              activePanel === 'wallet' 
-                ? 'bg-gradient-to-r from-neon-cyan to-neon-purple text-dark-future' 
-                : 'text-gray-subtle hover:text-neon-cyan'
-            }`}
+            className={`${activePanel === 'wallet' ? 'text-neon-cyan' : 'text-gray-subtle'} w-14 h-14 flex items-center justify-center group`}
+            tabIndex={0}
           >
-            <Wallet className="w-5 h-5" />
-            <span className="text-xs">Wallet</span>
+            <span className="w-12 h-12 flex items-center justify-center rounded-full transition-all duration-200">
+              <Wallet className={`w-6 h-6 ${activePanel === 'wallet' ? 'text-neon-cyan' : 'text-gray-subtle'}`} />
+            </span>
           </Button>
-          
           <Button
-            variant={activePanel === 'leaderboard' ? 'default' : 'ghost'}
-            size="sm"
+            variant="ghost"
+            size="icon"
             onClick={() => setActivePanel('leaderboard')}
-            className={`flex flex-col items-center space-y-1 py-3 ${
-              activePanel === 'leaderboard' 
-                ? 'bg-gradient-to-r from-neon-cyan to-neon-purple text-dark-future' 
-                : 'text-gray-subtle hover:text-neon-cyan'
-            }`}
+            className={`${activePanel === 'leaderboard' ? 'text-neon-cyan' : 'text-gray-subtle'} w-14 h-14 flex items-center justify-center group`}
+            tabIndex={0}
           >
-            <Trophy className="w-5 h-5" />
-            <span className="text-xs">Reyting</span>
+            <span className="w-12 h-12 flex items-center justify-center rounded-full transition-all duration-200">
+              <Trophy className={`w-6 h-6 ${activePanel === 'leaderboard' ? 'text-neon-cyan' : 'text-gray-subtle'}`} />
+            </span>
           </Button>
-          
           <Button
-            variant={activePanel === 'profile' ? 'default' : 'ghost'}
-            size="sm"
+            variant="ghost"
+            size="icon"
             onClick={() => setActivePanel('profile')}
-            className={`flex flex-col items-center space-y-1 py-3 ${
-              activePanel === 'profile' 
-                ? 'bg-gradient-to-r from-neon-cyan to-neon-purple text-dark-future' 
-                : 'text-gray-subtle hover:text-neon-cyan'
-            }`}
+            className={`${activePanel === 'profile' ? 'text-neon-cyan' : 'text-gray-subtle'} w-14 h-14 flex items-center justify-center group`}
+            tabIndex={0}
           >
-            <Settings className="w-5 h-5" />
-            <span className="text-xs">Profil</span>
+            <span className="w-12 h-12 flex items-center justify-center rounded-full transition-all duration-200">
+              <Settings className={`w-6 h-6 ${activePanel === 'profile' ? 'text-neon-cyan' : 'text-gray-subtle'}`} />
+            </span>
           </Button>
         </div>
       </div>
