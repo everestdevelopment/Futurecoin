@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const userSchema = new mongoose.Schema({
   telegramId: { type: String, required: true, unique: true },
   username: { type: String },
+  name: { type: String, required: true, unique: true },
   coins: { type: Number, default: 0 },
   xp: { type: Number, default: 0 },
   level: { type: Number, default: 1 },
